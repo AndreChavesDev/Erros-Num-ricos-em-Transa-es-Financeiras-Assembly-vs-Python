@@ -1,0 +1,13 @@
+# Executaveis gerados pela compilacao
+asm_float
+asm_inteiro
+
+# Arquivos objeto intermediarios
+*.o
+
+# Resultados gerados (opcional: remova esta linha se quiser versionar)
+resultados.txt
+
+# Cache Python
+__pycache__/
+*.pyc
