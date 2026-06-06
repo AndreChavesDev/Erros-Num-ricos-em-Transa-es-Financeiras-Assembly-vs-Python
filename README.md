@@ -7,7 +7,7 @@
 
 Todo sistema financeiro que processa transações em larga escala enfrenta um problema silencioso: **o número `0.1` não existe em binário**.
 
-Assim como `1/3` não tem representação exata em decimal (0.333...), o valor `0.1` não pode ser representado com exatidão no padrão IEEE 754 — que é o padrão de ponto flutuante usado por praticamente todo hardware e linguagem de programação moderno.
+Assim como `1/3` não tem representação exata em decimal (0.333...), o valor `0.1` não pode ser representado com exatidão no padrão IEEE 754, que é o padrão de ponto flutuante usado por praticamente todo hardware e linguagem de programação moderno.
 
 O valor real armazenado quando você escreve `0.1` é:
 
@@ -15,17 +15,17 @@ O valor real armazenado quando você escreve `0.1` é:
 0.1000000000000000055511151231257827021181583404541015625
 ```
 
-Esse erro é pequeno. Mas em um sistema que processa **1 milhão de transações de R$ 0,10**, o acúmulo desse erro pode fazer centavos aparecerem ou desaparecerem — dinheiro real, em produção.
+Esse erro é pequeno. Mas em um sistema que processa **1 milhão de transações de R$ 0,10**, o acúmulo desse erro pode fazer centavos aparecerem ou desaparecerem, dinheiro real, em produção.
 
 Este projeto demonstra esse fenômeno em cinco experimentos:
 
-1. **`asm_float.asm`** — Assembly com ponto flutuante: o erro exposto nos bits do registrador XMM, sem nenhuma abstração no caminho.
-2. **`asm_inteiro.asm`** — Assembly com inteiro escalado: a solução correta em baixo nível.
-3. **`python_float.py`** — Python com `float`: o mesmo erro existe, mas fica escondido pelo arredondamento automático na exibição.
-4. **`python_decimal.py`** — Python com `Decimal`: a solução correta em alto nível.
-5. **`comparacao.asm`** — O arquivo central do projeto: detecta o erro em tempo de execução, identifica a causa, aplica a correção com inteiro escalado e confirma o resultado — tudo dentro do mesmo fluxo.
+1. **`asm_float.asm`**: Assembly com ponto flutuante: o erro exposto nos bits do registrador XMM, sem nenhuma abstração no caminho.
+2. **`asm_inteiro.asm`**: Assembly com inteiro escalado: a solução correta em baixo nível.
+3. **`python_float.py`**: Python com `float`: o mesmo erro existe, mas fica escondido pelo arredondamento automático na exibição.
+4. **`python_decimal.py`**: Python com `Decimal`: a solução correta em alto nível.
+5. **`comparacao.asm`**: O arquivo central do projeto: detecta o erro em tempo de execução, identifica a causa, aplica a correção com inteiro escalado e confirma o resultado; tudo dentro do mesmo fluxo.
 
-O ponto central da comparação: **o erro não é da linguagem, é do padrão IEEE 754**. Assembly e Python erram da mesma forma. A diferença é que em Assembly você consegue ver exatamente onde e por que o erro ocorre — e a solução (inteiro escalado) também fica mais explícita.
+O ponto central da comparação: **o erro não é da linguagem, é do padrão IEEE 754**. Assembly e Python erram da mesma forma. A diferença é que em Assembly você consegue ver exatamente onde e por que o erro ocorre, e a solução (inteiro escalado) também fica mais explícita.
 
 ---
 
@@ -33,9 +33,9 @@ O ponto central da comparação: **o erro não é da linguagem, é do padrão IE
 
 Este não é um problema acadêmico. Alguns exemplos históricos:
 
-- **Vancouver Stock Exchange (1982):** o índice da bolsa era recalculado 3.000 vezes por dia com truncamento de ponto flutuante. Em 22 meses, o índice marcava 524 — quando deveria estar em 1.098.
+- **Vancouver Stock Exchange (1982):** o índice da bolsa era recalculado 3.000 vezes por dia com truncamento de ponto flutuante. Em 22 meses, o índice marcava 524, quando deveria estar em 1.098.
 - **Patriot Missile (1991):** acúmulo de erro em ponto flutuante em contagem de tempo causou falha no rastreamento de um míssil. 28 soldados mortos.
-- **Sistemas bancários modernos:** bancos sérios proíbem `float` para valores monetários. Usam `DECIMAL` em SQL, `BigDecimal` em Java, `decimal` em Python — ou armazenam tudo em centavos como inteiro.
+- **Sistemas bancários modernos:** bancos sérios proíbem `float` para valores monetários. Usam `DECIMAL` em SQL, `BigDecimal` em Java, `decimal` em Python, ou armazenam tudo em centavos como inteiro.
 
 ---
 
@@ -71,7 +71,7 @@ Este é o coração do projeto. Ao contrário dos outros arquivos que isolam um 
 [ ETAPA 5 ] Confirma que o resultado agora é exato
 ```
 
-Em Assembly você controla cada etapa desse processo em nível de hardware — comparações com flags de CPU, aritmética de inteiros sem intermediários, e acesso direto aos bits do registrador XMM.
+Em Assembly você controla cada etapa desse processo em nível de hardware, comparações com flags de CPU, aritmética de inteiros sem intermediários, e acesso direto aos bits do registrador XMM.
 
 ---
 
@@ -180,7 +180,7 @@ python3 python_decimal.py    # Python com Decimal (solução)
 ## O Que Cada Arquivo Ensina
 
 **`asm_float.asm`**
-Mostra os bits exatos do valor `0.1` no registrador XMM. O loop de soma acumula o erro progressivamente. A flag de overflow não acende porque não há overflow — o erro é de *representação*, não de magnitude.
+Mostra os bits exatos do valor `0.1` no registrador XMM. O loop de soma acumula o erro progressivamente. A flag de overflow não acende porque não há overflow, o erro é de *representação*, não de magnitude.
 
 **`asm_inteiro.asm`**
 Demonstra a solução usada em sistemas críticos: trabalhar com centavos como inteiro (`10`) e dividir por `100` apenas na hora de exibir. Nenhum ponto flutuante entra no cálculo.
@@ -219,4 +219,4 @@ Demonstra a solução correta em alto nível. Também alerta sobre a armadilha d
 
 ## Licença
 
-MIT — livre para uso educacional e acadêmico.
+MIT, livre para uso educacional e acadêmico.
